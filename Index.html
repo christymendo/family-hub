@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--tx:#1F2A44;--mu:#5F6B85;--line:#DCE4F0;--soft:#EEF2FA;--sun:#FFC83D;--sea:#19C3A6;--flam:#FF5C8A;--sky:#3DA5FF;--grape:#7C5CFF;
+--disp:"Fredoka","Arial Rounded MT Bold",system-ui,sans-serif;--body:"DM Sans",system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;color:var(--tx);font:17px/1.4 var(--body);background:var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--grape);outline-offset:2px}
+body{--hbg:linear-gradient(100deg,#DFF3FF,#FFF4C2);--ck:#2563EB;--ht:#1F2A44;--dk:rgba(255,255,255,.7);--stripe:linear-gradient(90deg,#3DA5FF,#19C3A6,#FFC83D)}
+body[data-sky=dawn]{--hbg:linear-gradient(100deg,#FFE3D0,#FFC9DB);--ck:#D6336C;--stripe:linear-gradient(90deg,#FF9A76,#FFC83D,#FF5C8A)}
+body[data-sky=dusk]{--hbg:linear-gradient(100deg,#E8DDFF,#FFD0C2);--ck:#6D3FD6;--stripe:linear-gradient(90deg,#7C5CFF,#FF5C8A,#FFC83D)}
+body[data-sky=night]{--hbg:linear-gradient(100deg,#1F2A57,#3B2F7A);--ck:#FFD966;--ht:#fff;--dk:rgba(255,255,255,.15);--stripe:linear-gradient(90deg,#3DA5FF,#7C5CFF,#FF5C8A)}
+.top{position:relative;display:flex;align-items:flex-end;gap:20px;padding:18px 28px 22px;margin-bottom:18px;background:var(--hbg);color:var(--ht)}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--stripe)}
+.clock{font:600 64px/1 var(--disp);letter-spacing:-1px;color:var(--ck)}
+.clock small{font-size:22px;font-weight:500;margin-left:6px;opacity:.75}
+.when{flex:1;padding-bottom:6px}
+.when b{display:block;font:500 24px var(--disp)}
+.when span{opacity:.8}
+.dock{display:flex;gap:6px;background:var(--dk);padding:6px;border-radius:999px}
+.tab{border:0;background:none;padding:12px 24px;border-radius:999px;font:500 18px var(--disp)}
+body[data-view=hub] [data-t=hub]{background:var(--sky);color:#fff}
+body[data-view=chores] [data-t=chores]{background:var(--flam);color:#fff}
+body[data-view=set] [data-t=set]{background:var(--sea);color:#fff}
+main{padding:0 28px 28px}
+section{display:none}
+body[data-view=hub] #hub,body[data-view=chores] #chores,body[data-view=set] #set{display:grid}
+.pn{background:var(--soft);border-radius:26px;padding:18px}
+.pn h2{margin:0 0 12px;font:600 21px var(--disp)}
+#hub{grid-template-columns:1.75fr 1fr;gap:18px}
+.col{display:flex;flex-direction:column;gap:18px;min-width:0}
+#hub .col:nth-child(1) .pn:nth-child(1){background:#E1F2FF}
+#hub .col:nth-child(1) .pn:nth-child(2){background:#FFF3CF}
+#hub .col:nth-child(2) .pn:nth-child(2){background:#DDF7EF}
+#hub .col:nth-child(2) .pn:nth-child(3){background:#FFE3EC}
+.wx{display:grid;grid-template-columns:1.7fr repeat(6,1fr);gap:8px;align-items:stretch}
+.wx>div{text-align:center;padding:10px 2px;border-radius:18px;background:rgba(255,255,255,.7)}
+.wx .t{background:var(--sun);display:flex;flex-direction:column;justify-content:center}
+.wx .t em{font:700 44px/1 var(--disp);font-style:normal}
+.wx .t span{font-size:44px}
+.wx b{display:block;font:500 15px var(--disp)}
+.wx span{display:block;font-size:30px;margin:2px 0}
+.wx i{font-style:normal;font-size:15px}
+.shell{background:#fff;border-radius:18px;overflow:hidden}
+iframe{width:100%;border:0;display:block}
+.ph{min-height:200px;border-radius:20px;background:rgba(31,42,68,.06) center/cover;display:flex;align-items:center;justify-content:center;text-align:center;padding:14px;color:var(--mu)}
+.photo{height:270px;position:relative;padding:0;border-radius:26px;overflow:hidden;background:#EBE3FF}
+.photo .ph{height:100%;border-radius:0}
+.yt{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.yt a{display:flex;align-items:center;gap:10px;padding:16px;border-radius:20px;background:var(--flam);color:var(--tx);text-decoration:none;font:600 19px var(--disp)}
+.yt a:nth-child(4n+2){background:var(--sky)}
+.yt a:nth-child(4n+3){background:var(--sun)}
+.yt a:nth-child(4n){background:var(--sea)}
+#chores{grid-template-columns:300px 1fr;gap:18px;align-items:start}
+.ringbox{text-align:center;padding:22px 16px;background:#FFE3EC}
+#cbox{background:#EAF3FF}
+.ring{position:relative;width:210px;height:210px;margin:0 auto 10px}
+.ring svg{transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:16;stroke-linecap:round}
+.ring .bg{stroke:rgba(255,255,255,.85)}
+.ring .fg{stroke:var(--flam);stroke-dasharray:440;stroke-dashoffset:440;transition:stroke-dashoffset .6s}
+.ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 56px/1 var(--disp)}
+.ring small{font:500 17px var(--body);color:var(--mu)}
+.ringbox.win{background:#DDF7EF}
+.ringbox.win .fg{stroke:var(--sea)}
+.ringbox.win .ring{animation:pulse 1.6s ease-in-out 3}
+@keyframes pulse{50%{transform:scale(1.05)}}
+.goal{font:500 20px var(--disp)}
+.goal span{color:var(--mu);font:400 16px var(--body);display:block;margin-top:4px}
+.chore{display:flex;align-items:center;gap:14px;padding:12px 6px;border-bottom:1px solid rgba(31,42,68,.1)}
+.chore:last-of-type{border:0}
+.ico{width:58px;height:58px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
+.nm{flex:1;font:600 21px var(--disp);min-width:0}
+.nm small{display:block;font:400 15px var(--body);color:var(--mu)}
+.days{display:flex;gap:8px}
+.d{width:50px;height:50px;border-radius:50%;border:2px solid var(--line);background:#fff;font:600 16px var(--disp);color:var(--mu)}
+.d.now{border-color:var(--flam);color:var(--flam)}
+.d.on{background:var(--sea);border-color:var(--sea);color:#fff;font-size:24px}
+.d.pop{animation:pop .35s}
+@keyframes pop{40%{transform:scale(1.3)}}
+.x{display:none;border:0;background:#FFD6E1;color:#C2154A;width:40px;height:40px;border-radius:50%;font-size:18px}
+.editing .x{display:block}
+.btn{border:0;border-radius:999px;padding:12px 22px;background:var(--grape);color:#fff;font:600 17px var(--disp)}
+.btn.ghost{background:#fff;color:var(--tx)}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.edit{margin-top:14px;padding-top:14px;border-top:1px solid rgba(31,42,68,.12);display:none}
+.editing .edit{display:block}
+input,textarea{font:inherit;color:var(--tx);background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;width:100%}
+label{display:block;margin:14px 0 6px;color:var(--mu)}
+#set{grid-template-columns:minmax(0,640px)}
+#set .pn{background:#DDF7EF}
+@media(max-width:900px){#hub,#chores{grid-template-columns:1fr}.clock{font-size:44px}.d{width:38px;height:38px}.days{gap:4px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head>
+<body data-view="hub" data-sky="day">
+<div class="top">
+<div class="clock" id="clk"></div>
+<div class="when"><b id="hi"></b><span id="dt"></span></div>
+<nav class="dock"><button class="tab" data-t="hub">Home</button><button class="tab" data-t="chores">Chores</button><button class="tab" data-t="set">Settings</button></nav>
+</div>
+<main>
+<section id="hub">
+<div class="col">
+<div class="pn"><h2>This week in Tampa</h2><div class="wx" id="wx">Loading weather…</div></div>
+<div class="pn"><h2>Family calendar</h2><div class="shell" id="cal"></div></div>
+</div>
+<div class="col">
+<div class="pn photo"><div class="ph" id="photo"></div></div>
+<div class="pn"><h2>Music</h2><div id="spot"></div></div>
+<div class="pn"><h2>Watch</h2><div class="yt" id="yt"></div></div>
+</div>
+</section>
+
+<section id="chores">
+<div class="pn ringbox" id="rb">
+<div class="ring"><svg width="210" height="210" viewBox="0 0 160 160"><circle class="bg" cx="80" cy="80" r="70"/><circle class="fg" id="fg" cx="80" cy="80" r="70" style="stroke-dasharray:440"/></svg><div><span id="got">0</span><small id="of"></small></div></div>
+<div class="goal" id="goalTxt"></div>
+</div>
+<div class="pn" id="cbox">
+<h2 id="cTitle"></h2>
+<div id="list"></div>
+<div class="bar"><button class="btn ghost" id="editBtn">Edit chores</button></div>
+<div class="edit">
+<div class="bar" style="margin-top:0"><input id="newE" placeholder="🧹" style="flex:0 0 70px;text-align:center"><input id="newT" placeholder="New chore" style="flex:1;min-width:160px"><input id="newP" type="number" min="1" value="1" style="flex:0 0 80px" aria-label="Stars per day"><button class="btn" id="add">Add chore</button></div>
+<label>Weekly star goal and reward</label>
+<div class="bar" style="margin-top:0"><input id="goal" type="number" min="1" style="flex:0 0 100px"><input id="reward" placeholder="Reward, like movie night" style="flex:1"></div>
+<div class="bar"><button class="btn ghost" id="reset">Clear this week</button></div>
+</div>
+</div>
+</section>
+
+<section id="set"><div class="pn">
+<h2>Settings</h2>
+<label>Child’s name (shown on the Chores tab)</label><input id="sName">
+<label>Google Calendar embed link (Calendar settings, Integrate calendar, copy the src link)</label><input id="sCal">
+<label>Spotify playlist link</label><input id="sSpot">
+<label>Family photos, saved privately on this tablet only</label>
+<div class="bar" style="margin-top:0"><input type="file" id="pf" accept="image/*" multiple hidden><button class="btn" id="pick">Add photos</button><button class="btn ghost" id="clr">Remove all</button><span id="pc"></span></div>
+<label>Photo links, one per line (optional)</label><textarea id="sPhoto" rows="4"></textarea>
+<label>Video buttons, one per line as Title | link</label><textarea id="sYt" rows="4"></textarea>
+<div class="bar"><button class="btn" id="save">Save settings</button></div>
+</div></section>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+var D=["M","T","W","T","F","S","S"],DN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var today=(new Date().getDay()+6)%7;
+function weekKey(){var d=new Date();d.setDate(d.getDate()-today);return d.toDateString()}
+
+/* header: clock, greeting, sky */
+function tick(){var n=new Date(),h=n.getHours();
+$("clk").innerHTML=((h%12)||12)+":"+("0"+n.getMinutes()).slice(-2)+"<small>"+(h<12?"am":"pm")+"</small>";
+$("hi").textContent=h<5?"Good night":h<12?"Good morning":h<17?"Good afternoon":h<21?"Good evening":"Good night";
+$("dt").textContent=n.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+document.body.dataset.sky=h<5||h>=21?"night":h<9?"dawn":h<17?"day":"dusk"}
+tick();setInterval(tick,20000);
+
+/* tabs */
+document.querySelectorAll(".tab").forEach(function(b){b.onclick=function(){document.body.dataset.view=b.dataset.t}});
+
+/* settings */
+var S=load("hubSet",{name:"",cal:"",spot:"",photos:"",yt:"Cartoons | https://www.youtube.com\nMusic | https://www.youtube.com"});
+function fillSet(){$("sName").value=S.name;$("sCal").value=S.cal;$("sSpot").value=S.spot;$("sPhoto").value=S.photos;$("sYt").value=S.yt}
+$("save").onclick=function(){S={name:$("sName").value.trim(),cal:$("sCal").value.trim(),spot:$("sSpot").value.trim(),photos:$("sPhoto").value,yt:$("sYt").value};store("hubSet",S);renderHub();renderChores();document.body.dataset.view="hub"};
+
+/* hub widgets */
+var ICON=function(c){return c===0?"☀️":c<3?"⛅":c<49?"☁️":c<68?"🌧️":c<78?"❄️":c<83?"🌦️":"⛈️"};
+function weather(){
+fetch("https://api.open-meteo.com/v1/forecast?latitude=27.95&longitude=-82.46&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto")
+.then(function(r){return r.json()}).then(function(j){
+var d=j.daily,h="";
+for(var i=0;i<7;i++){var dt=new Date(d.time[i]+"T12:00"),hi=Math.round(d.temperature_2m_max[i]),lo=Math.round(d.temperature_2m_min[i]);
+h+=i===0?'<div class="t"><b>Today</b><span>'+ICON(d.weather_code[i])+'</span><em>'+hi+'°</em><i>low '+lo+'°</i></div>'
+:'<div><b>'+DN[dt.getDay()]+'</b><span>'+ICON(d.weather_code[i])+'</span><i>'+hi+'° / '+lo+'°</i></div>';}
+$("wx").innerHTML=h}).catch(function(){$("wx").textContent="Weather needs an internet connection."});}
+function renderHub(){
+$("cal").innerHTML=S.cal?'<iframe src="'+S.cal.replace(/"/g,"")+'" style="height:400px"></iframe>':'<div class="ph" style="color:#5F6B85">Paste your Google Calendar link in Settings to see the week here.</div>';
+var sp=S.spot;
+if(sp){sp=sp.split("?")[0];if(sp.indexOf("/embed/")<0)sp=sp.replace("open.spotify.com/","open.spotify.com/embed/");
+$("spot").innerHTML='<iframe src="'+sp.replace(/"/g,"")+'" height="152" allow="encrypted-media" style="border-radius:16px"></iframe>';}
+else $("spot").innerHTML='<div class="ph" style="min-height:80px">Paste a Spotify playlist link in Settings.</div>';
+renderPhoto();
+var yt="";
+S.yt.split("\n").forEach(function(l){var p=l.split("|");if(p.length>1)yt+='<a href="'+p[1].trim().replace(/"/g,"")+'" target="_blank" rel="noopener">▶ '+esc(p[0].trim())+'</a>'});
+$("yt").innerHTML=yt||'<div class="ph" style="min-height:70px;grid-column:1/3">Add video links in Settings.</div>';}
+
+/* chores */
+var Z=[0,0,0,0,0,0,0],pop="";
+var C=load("hubChores",{week:weekKey(),goal:20,reward:"",chores:[
+{id:1,e:"🛏️",t:"Make bed",p:1,d:Z.slice()},{id:2,e:"🍽️",t:"Dishes",p:1,d:Z.slice()},
+{id:3,e:"📚",t:"Homework",p:2,d:Z.slice()},{id:4,e:"🧸",t:"Tidy room",p:2,d:Z.slice()}]});
+function newWeek(){if(C.week!==weekKey()){C.week=weekKey();C.chores.forEach(function(c){c.d=Z.slice()});store("hubChores",C)}}
+function renderChores(){
+newWeek();
+$("cTitle").textContent=(S.name?S.name+"’s chores":"This week’s chores");
+var h="",got=0,max=0;
+C.chores.forEach(function(c,ci){
+h+='<div class="chore"><div class="ico">'+esc(c.e||"⭐")+'</div><div class="nm">'+esc(c.t)+'<small>'+c.p+(c.p>1?" stars":" star")+' a day</small></div><div class="days">';
+c.d.forEach(function(v,i){if(v)got+=c.p;max+=c.p;
+h+='<button class="d'+(v?" on":"")+(i===today?" now":"")+(pop===ci+"-"+i?" pop":"")+'" data-c="'+ci+'" data-d="'+i+'" aria-label="'+D[i]+'">'+(v?"✓":D[i])+'</button>'});
+h+='</div><button class="x" data-r="'+ci+'" aria-label="Remove chore">✕</button></div>'});
+$("list").innerHTML=h||'<div class="ph" style="min-height:90px">No chores yet. Choose Edit chores to add one.</div>';
+pop="";
+var goal=C.goal||max||1,pct=Math.min(1,got/goal);
+$("fg").style.strokeDashoffset=440*(1-pct);
+$("got").textContent=got;$("of").textContent="of "+goal+" stars";
+$("rb").classList.toggle("win",got>=goal);
+$("goalTxt").innerHTML=got>=goal?"Goal reached!"+(C.reward?"<span>Time for "+esc(C.reward)+"</span>":""):(C.reward?"Earn "+esc(C.reward)+"<span>"+(goal-got)+" stars to go</span>":"<span>"+(goal-got)+" stars to go</span>");
+$("goal").value=C.goal;$("reward").value=C.reward;}
+$("list").onclick=function(e){var b=e.target.closest("button");if(!b)return;
+if(b.dataset.c!==undefined){var c=C.chores[b.dataset.c],i=b.dataset.d;c.d[i]=c.d[i]?0:1;pop=b.dataset.c+"-"+i}
+else if(b.dataset.r!==undefined){if(!confirm("Remove this chore?"))return;C.chores.splice(b.dataset.r,1)}
+else return;store("hubChores",C);renderChores()};
+$("editBtn").onclick=function(){var on=$("cbox").classList.toggle("editing");$("editBtn").textContent=on?"Done editing":"Edit chores"};
+$("add").onclick=function(){var t=$("newT").value.trim();if(!t)return;
+C.chores.push({id:Date.now(),e:$("newE").value.trim()||"⭐",t:t,p:parseInt($("newP").value)||1,d:Z.slice()});
+$("newT").value="";$("newE").value="";store("hubChores",C);renderChores()};
+$("reset").onclick=function(){if(!confirm("Clear all checkmarks for this week?"))return;C.chores.forEach(function(c){c.d=Z.slice()});store("hubChores",C);renderChores()};
+$("goal").onchange=function(){C.goal=parseInt($("goal").value)||1;store("hubChores",C);renderChores()};
+$("reward").onchange=function(){C.reward=$("reward").value.trim();store("hubChores",C);renderChores()};
+
+/* private photos stored in this browser */
+var DB;
+function openDB(cb){try{var r=indexedDB.open("hubPhotos",1);r.onupgradeneeded=function(){r.result.createObjectStore("p",{autoIncrement:true})};r.onsuccess=function(){DB=r.result;cb()};r.onerror=cb}catch(e){cb()}}
+function allPhotos(cb){if(!DB)return cb([]);var o=DB.transaction("p").objectStore("p").getAll();o.onsuccess=function(){cb(o.result)};o.onerror=function(){cb([])}}
+function shrink(f,cb){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(cb,"image/jpeg",.82)};im.onerror=function(){cb(null)};im.src=u}
+function renderPhoto(){var ph=$("photo"),day=Math.floor(Date.now()/864e5);
+allPhotos(function(L){
+$("pc").textContent=L.length?L.length+" photos saved":"";
+if(L.length){ph.style.backgroundImage='url("'+URL.createObjectURL(L[day%L.length])+'")';ph.textContent="";return}
+var ps=S.photos.split("\n").map(function(x){return x.trim()}).filter(Boolean);
+if(ps.length){ph.style.backgroundImage='url("'+ps[day%ps.length].replace(/"/g,"")+'")';ph.textContent=""}
+else{ph.style.backgroundImage="";ph.textContent="Add family photos in Settings for a new one each day."}})}
+$("pick").onclick=function(){$("pf").click()};
+$("pf").onchange=function(){var fs=[].slice.call(this.files),inp=this;$("pc").textContent="Saving…";
+(function next(){var f=fs.shift();if(!f){inp.value="";renderPhoto();return}
+shrink(f,function(b){if(b&&DB){var t=DB.transaction("p","readwrite");t.objectStore("p").add(b);t.oncomplete=next;t.onerror=next}else next()})})()};
+$("clr").onclick=function(){if(!DB||!confirm("Remove all photos saved on this tablet?"))return;var t=DB.transaction("p","readwrite");t.objectStore("p").clear();t.oncomplete=renderPhoto};
+try{navigator.storage.persist()}catch(e){}
+
+fillSet();renderHub();renderChores();weather();openDB(renderPhoto);setInterval(weather,36e5);
+</script>
+</body></html>
