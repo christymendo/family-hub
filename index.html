@@ -97,18 +97,47 @@ label{display:block;margin:14px 0 6px;color:var(--mu)}
 #set .pn{background:#DDF7EF}
 @media(max-width:900px){#hub,#chores{grid-template-columns:1fr}.clock{font-size:44px}.d{width:38px;height:38px}.days{gap:4px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+body[data-view=fam] [data-t=fam]{background:var(--grape);color:#fff}
+body[data-view=fam] #fam{display:grid}
+#hub .col:nth-child(1) .pn:nth-child(3){background:#EDE6FF}
+.notes{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.note{border-radius:16px;padding:14px;min-height:110px;display:flex;flex-direction:column;justify-content:space-between;font:500 18px var(--disp);box-shadow:0 3px 0 rgba(31,42,68,.12);overflow-wrap:anywhere}
+.note button{align-self:flex-end;margin-top:8px;border:0;background:rgba(255,255,255,.8);border-radius:999px;padding:8px 14px;font:600 15px var(--disp)}
+.n0{background:#FFE066}.n1{background:#FFB3C7}.n2{background:#A8E6CF}.n3{background:#B5D8FF}
+#fam{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+#gPn{background:#DDF7EF}#cPn{background:#FFF3CF}#iPn{background:#E1F2FF}
+.gi{display:flex;align-items:center;gap:12px;padding:10px 4px;font:500 20px var(--disp);width:100%;background:none;border:0;text-align:left}
+.gi i{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-style:normal;color:#fff}
+.gi.on i{background:var(--sea);border-color:var(--sea)}
+.gi.on span{text-decoration:line-through;opacity:.5}
+.cd{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#fff;border-radius:18px;margin-bottom:8px}
+.cd b{font:700 38px/1 var(--disp);min-width:70px;text-align:center;color:var(--flam)}
+.cd b em{display:block;font:500 14px var(--body);font-style:normal;color:var(--mu)}
+.x2{border:0;background:#FFD6E1;color:#C2154A;width:36px;height:36px;border-radius:50%;font-size:16px;margin-left:auto;flex:none}
+.ir{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(31,42,68,.1)}
+.ir b{font:600 18px var(--disp);flex:0 0 120px}
+.ir span{overflow-wrap:anywhere}
+#tPn{background:#FFF3CF;text-align:center}
+#tDisp{font:700 60px/1.1 var(--disp);color:var(--grape)}
+#tDisp.done{font-size:38px;color:var(--flam);animation:pulse 1s ease-in-out infinite}
+#rwPn{background:#DDF7EF}
+button:disabled{opacity:.4;cursor:default}
+.pre{background:#fff;color:var(--tx);padding:10px 16px}
+@media(max-width:900px){#fam{grid-template-columns:1fr}}
 </style></head>
 <body data-view="hub" data-sky="day">
 <div class="top">
 <div class="clock" id="clk"></div>
 <div class="when"><b id="hi"></b><span id="dt"></span></div>
-<nav class="dock"><button class="tab" data-t="hub">Home</button><button class="tab" data-t="chores">Chores</button><button class="tab" data-t="set">Settings</button></nav>
+<nav class="dock"><button class="tab" data-t="hub">Home</button><button class="tab" data-t="chores">Chores</button><button class="tab" data-t="fam">Family</button><button class="tab" data-t="set">Settings</button></nav>
 </div>
 <main>
 <section id="hub">
 <div class="col">
 <div class="pn"><h2>This week in Tampa</h2><div class="wx" id="wx">Loading weather…</div></div>
 <div class="pn"><h2>Family calendar</h2><div class="shell" id="cal"></div></div>
+<div class="pn"><h2>Notes board</h2><div class="bar" style="margin:0 0 12px"><input id="nIn" placeholder="Add a note or reminder" style="flex:1;min-width:160px"><button class="btn" id="nAdd">Add</button></div><div class="notes" id="notes"></div></div>
 </div>
 <div class="col">
 <div class="pn photo"><div class="ph" id="photo"></div></div>
@@ -118,10 +147,16 @@ label{display:block;margin:14px 0 6px;color:var(--mu)}
 </section>
 
 <section id="chores">
+<div class="col">
 <div class="pn ringbox" id="rb">
 <div class="ring"><svg width="210" height="210" viewBox="0 0 160 160"><circle class="bg" cx="80" cy="80" r="70"/><circle class="fg" id="fg" cx="80" cy="80" r="70" style="stroke-dasharray:440"/></svg><div><span id="got">0</span><small id="of"></small></div></div>
 <div class="goal" id="goalTxt"></div>
 </div>
+<div class="pn" id="tPn"><h2>Timer</h2><div id="tDisp">5:00</div>
+<div class="bar" style="justify-content:center"><button class="btn" id="tGo">Start</button><button class="btn ghost" id="tRst">Reset</button></div>
+<div class="bar" style="justify-content:center" id="tPre"></div></div>
+</div>
+<div class="col">
 <div class="pn" id="cbox">
 <h2 id="cTitle"></h2>
 <div id="list"></div>
@@ -133,6 +168,16 @@ label{display:block;margin:14px 0 6px;color:var(--mu)}
 <div class="bar"><button class="btn ghost" id="reset">Clear this week</button></div>
 </div>
 </div>
+<div class="pn" id="rwPn"><h2>Rewards</h2><div class="goal" id="bank"></div><div id="rwl"></div>
+<div class="bar"><button class="btn ghost" id="rwEdit">Edit rewards</button></div>
+<div class="edit"><div class="bar" style="margin-top:0"><input id="rwE" placeholder="🎁" style="flex:0 0 70px;text-align:center"><input id="rwN" placeholder="New reward" style="flex:1;min-width:140px"><input id="rwC" type="number" min="1" value="5" style="flex:0 0 80px" aria-label="Star cost"><button class="btn" id="rwAdd">Add reward</button></div></div></div>
+</div>
+</section>
+
+<section id="fam">
+<div class="pn" id="gPn"><h2>Grocery list</h2><div class="bar" style="margin:0 0 10px"><input id="gIn" placeholder="Add an item" style="flex:1;min-width:120px"><button class="btn" id="gAdd">Add</button></div><div id="gl"></div><div class="bar"><button class="btn ghost" id="gClr">Clear checked</button></div></div>
+<div class="pn" id="cPn"><h2>Countdowns</h2><div class="bar" style="margin:0 0 10px"><input id="cdN" placeholder="Event name" style="flex:1;min-width:120px"><input id="cdD" type="date" style="flex:0 0 160px"><button class="btn" id="cdAdd">Add</button></div><div id="cdl"></div></div>
+<div class="pn" id="iPn"><h2>Family info</h2><div id="info"></div><textarea id="iTa" rows="9" hidden></textarea><div class="bar"><button class="btn ghost" id="iEdit">Edit</button></div></div>
 </section>
 
 <section id="set"><div class="pn">
@@ -200,7 +245,10 @@ var Z=[0,0,0,0,0,0,0],pop="";
 var C=load("hubChores",{week:weekKey(),goal:20,reward:"",chores:[
 {id:1,e:"🛏️",t:"Make bed",p:1,d:Z.slice()},{id:2,e:"🍽️",t:"Dishes",p:1,d:Z.slice()},
 {id:3,e:"📚",t:"Homework",p:2,d:Z.slice()},{id:4,e:"🧸",t:"Tidy room",p:2,d:Z.slice()}]});
-function newWeek(){if(C.week!==weekKey()){C.week=weekKey();C.chores.forEach(function(c){c.d=Z.slice()});store("hubChores",C)}}
+C.rewards=C.rewards||[{e:"🎬",n:"Movie night",c:15},{e:"🍦",n:"Ice cream trip",c:10},{e:"🎮",n:"Extra screen time",c:5}];
+var lastGot=0;
+function weekGot(){var g=0;C.chores.forEach(function(c){c.d.forEach(function(v){if(v)g+=c.p})});return g}
+function newWeek(){if(C.week!==weekKey()){C.week=weekKey();C.bank=(C.bank||0)+weekGot();C.chores.forEach(function(c){c.d=Z.slice()});store("hubChores",C)}}
 function renderChores(){
 newWeek();
 $("cTitle").textContent=(S.name?S.name+"’s chores":"This week’s chores");
@@ -217,7 +265,7 @@ $("fg").style.strokeDashoffset=440*(1-pct);
 $("got").textContent=got;$("of").textContent="of "+goal+" stars";
 $("rb").classList.toggle("win",got>=goal);
 $("goalTxt").innerHTML=got>=goal?"Goal reached!"+(C.reward?"<span>Time for "+esc(C.reward)+"</span>":""):(C.reward?"Earn "+esc(C.reward)+"<span>"+(goal-got)+" stars to go</span>":"<span>"+(goal-got)+" stars to go</span>");
-$("goal").value=C.goal;$("reward").value=C.reward;}
+$("goal").value=C.goal;$("reward").value=C.reward;lastGot=got;renderRewards();}
 $("list").onclick=function(e){var b=e.target.closest("button");if(!b)return;
 if(b.dataset.c!==undefined){var c=C.chores[b.dataset.c],i=b.dataset.d;c.d[i]=c.d[i]?0:1;pop=b.dataset.c+"-"+i}
 else if(b.dataset.r!==undefined){if(!confirm("Remove this chore?"))return;C.chores.splice(b.dataset.r,1)}
@@ -229,6 +277,52 @@ $("newT").value="";$("newE").value="";store("hubChores",C);renderChores()};
 $("reset").onclick=function(){if(!confirm("Clear all checkmarks for this week?"))return;C.chores.forEach(function(c){c.d=Z.slice()});store("hubChores",C);renderChores()};
 $("goal").onchange=function(){C.goal=parseInt($("goal").value)||1;store("hubChores",C);renderChores()};
 $("reward").onchange=function(){C.reward=$("reward").value.trim();store("hubChores",C);renderChores()};
+
+/* rewards */
+function renderRewards(){var bal=(C.bank||0)+lastGot-(C.spent||0);
+$("bank").innerHTML="⭐ "+bal+" stars saved<span>Stars from past weeks and this week add up here</span>";
+$("rwl").innerHTML=C.rewards.map(function(r,i){return '<div class="chore"><div class="ico">'+esc(r.e||"🎁")+'</div><div class="nm">'+esc(r.n)+'<small>'+r.c+' stars</small></div><button class="btn" data-rd="'+i+'"'+(bal<r.c?" disabled":"")+'>Redeem</button><button class="x" data-rr="'+i+'" aria-label="Remove reward">✕</button></div>'}).join("")||'<div class="ph" style="min-height:80px">No rewards yet. Choose Edit rewards.</div>'}
+$("rwPn").onclick=function(e){var b=e.target.closest("button");if(!b)return;
+if(b.dataset.rd!==undefined){var r=C.rewards[b.dataset.rd];if(!confirm("Spend "+r.c+" stars on "+r.n+"?"))return;C.spent=(C.spent||0)+r.c}
+else if(b.dataset.rr!==undefined){C.rewards.splice(b.dataset.rr,1)}
+else if(b.id==="rwEdit"){var on=$("rwPn").classList.toggle("editing");b.textContent=on?"Done editing":"Edit rewards";return}
+else if(b.id==="rwAdd"){var n=$("rwN").value.trim();if(!n)return;C.rewards.push({e:$("rwE").value.trim()||"🎁",n:n,c:parseInt($("rwC").value)||5});$("rwN").value="";$("rwE").value=""}
+else return;store("hubChores",C);renderChores()};
+
+/* timer */
+var T={len:300,left:300,end:0,run:0,iv:0};
+function fmt(n){return Math.floor(n/60)+":"+("0"+n%60).slice(-2)}
+function tShow(){$("tDisp").textContent=fmt(T.left);$("tGo").textContent=T.run?"Pause":"Start"}
+function beep(){try{var a=new (window.AudioContext||window.webkitAudioContext)(),i=0;(function b(){if(i++>5)return;var o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.2;o.start();o.stop(a.currentTime+.25);setTimeout(b,450)})()}catch(e){}}
+function tStop(){T.run=0;clearInterval(T.iv)}
+function tStep(){T.left=Math.max(0,Math.round((T.end-Date.now())/1000));
+if(T.left<=0){tStop();$("tDisp").classList.add("done");$("tDisp").textContent="Time’s up!";$("tGo").textContent="Start";beep();return}tShow()}
+$("tGo").onclick=function(){if(T.run){tStop();tShow();return}
+if(T.left<=0)T.left=T.len;$("tDisp").classList.remove("done");T.end=Date.now()+T.left*1000;T.run=1;T.iv=setInterval(tStep,250);tShow()};
+$("tRst").onclick=function(){tStop();T.left=T.len;$("tDisp").classList.remove("done");tShow()};
+[2,5,10,15,30].forEach(function(m){var b=document.createElement("button");b.className="btn pre";b.textContent=m+" min";b.onclick=function(){tStop();T.len=T.left=m*60;$("tDisp").classList.remove("done");tShow()};$("tPre").appendChild(b)});
+
+/* notes, grocery, countdowns, family info */
+var H=load("hubData",{g:[],cd:[],n:[],info:"Wi-Fi | \nEmergency | 911\nPediatrician | \nSchool | "});
+function saveH(){store("hubData",H)}
+function enter(i,b){$(i).onkeydown=function(e){if(e.key==="Enter")$(b).click()}}
+function renderNotes(){$("notes").innerHTML=H.n.map(function(n,i){return '<div class="note n'+(n.id%4)+'"><span>'+esc(n.t)+'</span><button data-i="'+i+'">✓ Done</button></div>'}).join("")||'<div class="ph" style="min-height:90px;grid-column:1/-1">No notes. Add a reminder above.</div>'}
+$("nAdd").onclick=function(){var t=$("nIn").value.trim();if(!t)return;H.n.push({id:Date.now(),t:t});$("nIn").value="";saveH();renderNotes()};
+$("notes").onclick=function(e){var b=e.target.closest("button");if(b){H.n.splice(b.dataset.i,1);saveH();renderNotes()}};
+function renderG(){$("gl").innerHTML=H.g.map(function(g,i){return '<button class="gi'+(g.d?" on":"")+'" data-i="'+i+'"><i>'+(g.d?"✓":"")+'</i><span>'+esc(g.t)+'</span></button>'}).join("")||'<div class="ph" style="min-height:80px">Nothing on the list.</div>'}
+$("gAdd").onclick=function(){var t=$("gIn").value.trim();if(!t)return;H.g.push({t:t,d:0});$("gIn").value="";saveH();renderG()};
+$("gl").onclick=function(e){var b=e.target.closest("button");if(b){H.g[b.dataset.i].d^=1;saveH();renderG()}};
+$("gClr").onclick=function(){H.g=H.g.filter(function(g){return !g.d});saveH();renderG()};
+function dleft(d){return Math.round((new Date(d+"T00:00")-new Date(new Date().toDateString()))/864e5)}
+function renderCD(){H.cd=H.cd.filter(function(c){return dleft(c.d)>=0});
+var L=H.cd.map(function(c,i){return{c:c,i:i,n:dleft(c.d)}}).sort(function(a,b){return a.n-b.n});
+$("cdl").innerHTML=L.map(function(x){return '<div class="cd"><b>'+(x.n===0?"🎉":x.n+"<em>"+(x.n===1?"day":"days")+"</em>")+'</b><div class="nm">'+esc(x.c.t)+'<small>'+(x.n===0?"Today!":new Date(x.c.d+"T12:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}))+'</small></div><button class="x2" data-i="'+x.i+'" aria-label="Remove countdown">✕</button></div>'}).join("")||'<div class="ph" style="min-height:80px">No countdowns yet.</div>'}
+$("cdAdd").onclick=function(){var t=$("cdN").value.trim(),d=$("cdD").value;if(!t||!d)return;H.cd.push({t:t,d:d});$("cdN").value="";saveH();renderCD()};
+$("cdl").onclick=function(e){var b=e.target.closest("button");if(b){H.cd.splice(b.dataset.i,1);saveH();renderCD()}};
+function renderInfo(){$("info").innerHTML=H.info.split("\n").filter(function(l){return l.trim()}).map(function(l){var p=l.split("|");return p.length>1?'<div class="ir"><b>'+esc(p[0].trim())+'</b><span>'+(esc(p.slice(1).join("|").trim())||"—")+'</span></div>':'<div class="ir"><span>'+esc(l)+'</span></div>'}).join("")}
+$("iEdit").onclick=function(){var ta=$("iTa");if(ta.hidden){ta.value=H.info;ta.hidden=false;$("info").hidden=true;this.textContent="Save"}else{H.info=ta.value;saveH();ta.hidden=true;$("info").hidden=false;this.textContent="Edit";renderInfo()}};
+enter("nIn","nAdd");enter("gIn","gAdd");enter("cdN","cdAdd");enter("rwN","rwAdd");enter("newT","add");
+renderNotes();renderG();renderCD();renderInfo();tShow();
 
 /* private photos stored in this browser */
 var DB;
